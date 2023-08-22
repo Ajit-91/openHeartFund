@@ -2,12 +2,12 @@ import React, { useContext, createContext } from 'react';
 
 import { useAddress, useContract, useMetamask, useContractWrite } from '@thirdweb-dev/react';
 import { ethers } from 'ethers';
-import { EditionMetadataWithOwnerOutputSchema } from '@thirdweb-dev/sdk';
 
 const StateContext = createContext();
 
 export const StateContextProvider = ({ children }) => {
-  const { contract } = useContract('0xf59A1f8251864e1c5a6bD64020e3569be27e6AA9');
+  const { contract } = useContract(import.meta.env.VITE_CONTRACT_ADDRESS);
+  console.log({contract})
   const { mutateAsync: createCampaign } = useContractWrite(contract, 'createCampaign');
 
   const address = useAddress();
@@ -15,6 +15,7 @@ export const StateContextProvider = ({ children }) => {
 
   const publishCampaign = async (form) => {
     try {
+      console.log({form})
       const data = await createCampaign({
 				args: [
 					address, // owner
@@ -34,7 +35,7 @@ export const StateContextProvider = ({ children }) => {
 
   const getCampaigns = async () => {
     const campaigns = await contract.call('getCampaigns');
-
+    console.log({campaigns})
     const parsedCampaings = campaigns.map((campaign, i) => ({
       owner: campaign.owner,
       title: campaign.title,
